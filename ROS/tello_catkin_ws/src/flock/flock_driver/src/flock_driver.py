@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 import threading
 import rospy
 from geometry_msgs.msg import Twist
-from sensor_msgs.msg import Image, CameraInfo
+from sensor_msgs.msg import Image, CameraInfo, CompressedImage
 from std_msgs.msg import Empty
 from flock_msgs.msg import Flip, FlightData
 from std_msgs.msg import Int32, Bool, String, Float32
@@ -15,7 +15,6 @@ from cv_bridge import CvBridge
 import numpy as np
 import libh264decoder
 import signal
-
 
 
 class FlockDriver(object):
@@ -73,27 +72,26 @@ class FlockDriver(object):
         # except:
         self.tello_ip = '192.168.10.1'
 
-        self.publish_prefix = "tello{}/".format(self.id)
+        self.publish_prefix = "tello{}".format(self.id)
 
         # ROS publishers
-        self._flight_data_pub = rospy.Publisher(self.publish_prefix+'flight_data', FlightData, queue_size=10)
-        self._image_pub = rospy.Publisher(self.publish_prefix+'camera/image_raw', Image, queue_size=10)
-        self._wifi_strength_data_pub = rospy.Publisher(self.publish_prefix+'wifi_strength', Int32, queue_size=10)
-        self._light_strength_data_pub = rospy.Publisher(self.publish_prefix+'light_strength', Int32, queue_size=10)
-        self._camera_info_pub = rospy.Publisher(self.publish_prefix+'camera/camera_info', CameraInfo, queue_size=10)
-
-        
+        self._flight_data_pub = rospy.Publisher(self.publish_prefix+'/flight_data', FlightData, queue_size=10)
+        self._image_pub = rospy.Publisher(self.publish_prefix+'/camera/image_raw', Image, queue_size=10)
+        self._compressed_image_pub = rospy.Publisher(self.publish_prefix+'/camera/image_raw/compressed', CompressedImage, queue_size=10)
+        self._wifi_strength_data_pub = rospy.Publisher(self.publish_prefix+'/wifi_strength', Int32, queue_size=10)
+        self._light_strength_data_pub = rospy.Publisher(self.publish_prefix+'/light_strength', Int32, queue_size=10)
+        self._camera_info_pub = rospy.Publisher(self.publish_prefix+'/camera/camera_info', CameraInfo, queue_size=10)
 
         # ROS subscriptions
-        rospy.Subscriber(self.publish_prefix+'cmd_vel', Twist, self.cmd_vel_callback)
-        rospy.Subscriber(self.publish_prefix+'takeoff', Empty, self.takeoff_callback)
-        rospy.Subscriber(self.publish_prefix+'land', Empty, self.land_callback)
-        rospy.Subscriber(self.publish_prefix+'flip', Flip, self.flip_callback)
-        rospy.Subscriber(self.publish_prefix+'zoom_mode', Bool, self.zoom_callback)
-        rospy.Subscriber(self.publish_prefix+'exposure_level', Int32, self.exposure_callback)
-        rospy.Subscriber(self.publish_prefix+'video_encoder_rate', Int32, self.video_encoder_rate_callback)
-        rospy.Subscriber(self.publish_prefix+'log_level', String, self.log_level_callback)
-        rospy.Subscriber(self.publish_prefix+'move_up', Float32, self.move_up_callback)
+        rospy.Subscriber(self.publish_prefix+'/cmd_vel', Twist, self.cmd_vel_callback)
+        rospy.Subscriber(self.publish_prefix+'/takeoff', Empty, self.takeoff_callback)
+        rospy.Subscriber(self.publish_prefix+'/land', Empty, self.land_callback)
+        rospy.Subscriber(self.publish_prefix+'/flip', Flip, self.flip_callback)
+        rospy.Subscriber(self.publish_prefix+'/zoom_mode', Bool, self.zoom_callback)
+        rospy.Subscriber(self.publish_prefix+'/exposure_level', Int32, self.exposure_callback)
+        rospy.Subscriber(self.publish_prefix+'/video_encoder_rate', Int32, self.video_encoder_rate_callback)
+        rospy.Subscriber(self.publish_prefix+'/log_level', String, self.log_level_callback)
+        rospy.Subscriber(self.publish_prefix+'/move_up', Float32, self.move_up_callback)
         
 
         # ROS OpenCV bridge
@@ -364,11 +362,17 @@ class FlockDriver(object):
                 # Convert OpenCV Mat => ROS Image message and publish
                 img_msg = self._cv_bridge.cv2_to_imgmsg(color_mat, 'bgr8')
                 img_msg.header.stamp = rospy.Time.now()
+                img_msg.header.frame_id = self.publish_prefix+'_camera'
                 self._image_pub.publish(img_msg)
-                # print("published frame")                
+                
+                # publish camera info          
                 self.camera_info.header = img_msg.header
                 self._camera_info_pub.publish(self.camera_info)
-                # print("published")
+                
+                # publish compressed image
+                compressed_img_msg = self._cv_bridge.cv2_to_compressed_imgmsg(color_mat)
+                compressed_img_msg.header    = img_msg.header
+                self._compressed_image_pub.publish(compressed_img_msg)                
 
             self.packet_data = ""
 
