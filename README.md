@@ -218,16 +218,12 @@ cd Pangolin
 mkdir build
 cd build
 cmake ..
-cmake --build
+make
+sudo make install
 ```
 
 ### h264decoder
 Baed on https://github.com/DaWelter/h264decoder
-```
-cd ~/ROS/
-git clone https://github.com/DaWelter/h264decoder.git
-```
-Inside h264decoder.cpp replace PIX_FMT_RGB24 with AV_PIX_FMT_RGB24
 ```
 mkdir build
 cd build
@@ -236,7 +232,7 @@ make
 ```
 now copy it to python path
 ```
-sudo cp ~/ROS/h264decoder/libh264decoder.so /usr/local/lib/python2.7/dist-packages
+sudo cp ~/ROS/Tello_ROS_ORBSLAM/h264decoder/libh264decoder.so /usr/local/lib/python2.7/dist-packages
 ```
 # Installing Our Repository
 ## Cloning Our repo from github
