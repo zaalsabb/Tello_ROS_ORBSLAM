@@ -1,0 +1,33 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/ig3/Tello_ROS_ORBSLAM/ROS/tello_catkin_ws/devel/include/**",
+        "/home/ig3/catkin_ws/devel/include/**",
+        "/opt/ros/melodic/include/**",
+        "/home/ig3/catkin_ws/src/kobuki_bumper2pc/include/**",
+        "/home/ig3/catkin_ws/src/kobuki_gazebo_plugins/include/**",
+        "/home/ig3/catkin_ws/src/kobuki_keyop/include/**",
+        "/home/ig3/catkin_ws/src/kobuki_node/include/**",
+        "/home/ig3/catkin_ws/src/kobuki_safety_controller/include/**",
+        "/home/ig3/catkin_ws/src/lidar2depth/include/**",
+        "/home/ig3/catkin_ws/src/loam_livox/include/**",
+        "/home/ig3/catkin_ws/src/pan_tilt_ros/pan_tilt_driver/include/**",
+        "/home/ig3/catkin_ws/src/turtlebot_apps/turtlebot_actions/include/**",
+        "/home/ig3/catkin_ws/src/yocs_cmd_vel_mux/include/**",
+        "/home/ig3/catkin_ws/src/yocs_controllers/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
