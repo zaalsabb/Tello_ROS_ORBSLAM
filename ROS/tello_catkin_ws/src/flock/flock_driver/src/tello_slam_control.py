@@ -106,8 +106,10 @@ class TelloSlamControler(object):
         self.MAX_COUNT_BEFORE_MAP_EXISTS_FLAG = 10 * self.rate
 
         # self.caution_speed_threshold = Point(0.25, 0.25, 0.3)
-        self.caution_speed_threshold = Point(0.3, 0.3, 0.5)
-        self.caution_speed_yaw = 0.1 # 0.34
+        # self.caution_speed_threshold = Point(0.3, 0.3, 0.5)
+        # self.caution_speed_yaw = 0.1
+        self.caution_speed_threshold = Point(1, 1, 1)
+        self.caution_speed_yaw = 1       
 
 
         self.map_exists_flag = False

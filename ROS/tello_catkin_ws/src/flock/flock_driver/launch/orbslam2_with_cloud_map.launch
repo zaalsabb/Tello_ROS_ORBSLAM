@@ -6,7 +6,6 @@
   
 	<node name="orb_slam2_mono" pkg="orb_slam2_ros" type="orb_slam2_ros_mono" output="screen">
         
-
       <remap from="/camera/image_raw" to="/tello/camera/image_raw" />
 
       <param name="publish_pointcloud" type="bool" value="true" />
@@ -80,9 +79,9 @@
 </node> 
 
   <!-- <node name="tello_keyboard_node" pkg="flock_driver" type="tello_keyboard.py" output="screen">
-      <remap from="/tello/cmd_vel" to="/tello0/cmd_vel" />
-      <remap from="/tello/takeoff" to="/tello0/takeoff" />
-      <remap from="/tello/land" to="/tello0/land" />
+      <remap from="/tello/cmd_vel" to="/tello/cmd_vel" />
+      <remap from="/tello/takeoff" to="/tello/takeoff" />
+      <remap from="/tello/land" to="/tello/land" />
   </node> -->
 
 
