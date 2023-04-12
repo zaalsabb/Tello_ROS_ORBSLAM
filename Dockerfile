@@ -4,9 +4,9 @@ ENV ROS_DISTRO melodic
 # update
 RUN apt-get -y update && \
     apt-get -y install git \
-    apt-get -y install wget \
-    apt-get -y install libeigen3-dev ffmpeg \
-    apt-get -y install python-imaging-tk
+                       wget \
+                       libeigen3-dev ffmpeg \
+                       python-imaging-tk
 
 # install cv and pcl tools for ros
 RUN apt-get install ros-$ROS_DISTRO-cv-bridge ros-$ROS_DISTRO-pcl-conversions ros-$ROS_DISTRO-tf ros-$ROS_DISTRO-message-filters ros-$ROS_DISTRO-image-transport* ros-$ROS_DISTRO-rospy-message-converter -y
@@ -18,7 +18,7 @@ WORKDIR $ROS_WS
 
 # install build tools
 RUN apt-get update && apt-get install -y \
-      python3-catkin-tools \
+      python-catkin-tools \
       git \
     && rm -rf /var/lib/apt/lists/*
 
@@ -26,16 +26,19 @@ RUN apt-get update && apt-get install -y \
 COPY ./ $ROS_WS/src/Tello_ROS_ORBSLAM/
 
 # install pangolin
-WORKDIR /
-COPY ./install_pangolin.sh install_pangolin.sh
-RUN ./install_pangolin.sh
+# WORKDIR /
+# RUN apt-get -y install libgl1-mesa-dev libglew-dev libxkbcommon-dev
+# COPY ./install_pangolin.sh install_pangolin.sh
+# RUN ./install_pangolin.sh
 
 # Tello_ROS_ORBSLAM setup
-RUN cp $ROS_WS/Tello_ROS_ORBSLAM/h264decoder/libh264decoder.so /usr/local/lib/python2.7/dist-packages
-WORKDIR $ROS_WS/Tello_ROS_ORBSLAM/TelloPy
+WORKDIR $ROS_WS
+RUN cp $ROS_WS/src/Tello_ROS_ORBSLAM/h264decoder/libh264decoder.so /usr/local/lib/python2.7/dist-packages
+WORKDIR $ROS_WS/src/Tello_ROS_ORBSLAM/TelloPy
 RUN python setup.py install
 
 # build ros package source
+WORKDIR $ROS_WS
 RUN catkin config \
       --extend /opt/ros/$ROS_DISTRO && \
     catkin build
