@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  drone-ros:
+    build:
+      context: .
+      network: host
+    network_mode: "host"
+    restart: always
