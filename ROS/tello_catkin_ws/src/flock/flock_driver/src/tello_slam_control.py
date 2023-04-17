@@ -16,22 +16,22 @@ from copy import deepcopy
 class TelloSlamControler(object):
 
     def __init__(self):
-        
+
 
         # Initialize ROS
         rospy.init_node('tello_slam_control', anonymous=False)
 
-        
+
         # rospy.Subscriber('land', Empty, self.land_callback)
 
         self.time_of_takeoff = time.time() - 1000
 
-        try: 
+        try:
             self.id = rospy.get_param('~ID')
         except KeyError:
             self.id = ''
 
-        
+
         try:
             self.pose_topic_name = rospy.get_param('~POSE_TOPIC_NAME')
         except KeyError:
@@ -57,7 +57,7 @@ class TelloSlamControler(object):
         self.command_pos = Point()
         self.command_orientation_deg = Point()
         self.twist = Twist()
-        self.rotated_pos = Point() 
+        self.rotated_pos = Point()
         self.real_world = PoseStamped()
         self.rotated_position_0 = Point()
         self.pos_error = Point()
@@ -109,7 +109,7 @@ class TelloSlamControler(object):
         # self.caution_speed_threshold = Point(0.3, 0.3, 0.5)
         # self.caution_speed_yaw = 0.1
         self.caution_speed_threshold = Point(1, 1, 1)
-        self.caution_speed_yaw = 1       
+        self.caution_speed_yaw = 1
 
 
         self.map_exists_flag = False
@@ -152,7 +152,7 @@ class TelloSlamControler(object):
         self.last_time_published = time.time()
         self.thread = threading.Thread(target=self.peridoc_timer, args=())
         self.thread.start()
-        
+
 
         # Spin until interrupted
         rospy.spin()
@@ -334,7 +334,7 @@ class TelloSlamControler(object):
         euler.y = self.rad_to_deg(euler_list[1])
         euler.z = self.rad_to_deg(euler_list[2])
         return euler
-      
+
 
     def command_pos_callback(self, command_pos):
         self.command_pos = command_pos.position
@@ -403,7 +403,7 @@ class TelloSlamControler(object):
 
         # self.rotated_pos = slam_msg.pose.position
         self.slam_pos = slam_msg.pose.position
-        self.slam_quaternion = slam_msg.pose.orientation 
+        self.slam_quaternion = slam_msg.pose.orientation
         self.slam_orientation_rad_list = euler_from_quaternion([self.slam_quaternion.x, self.slam_quaternion.y, self.slam_quaternion.z, self.slam_quaternion.w])
         self.slam_orientation_rad = Point(self.slam_orientation_rad_list[0], self.slam_orientation_rad_list[1], self.slam_orientation_rad_list[2])
         self.orientation_buffer.pop(0)
@@ -433,7 +433,7 @@ class TelloSlamControler(object):
 
         slam_orientation_rad_copy = self.point_copy(self.slam_orientation_rad)
         slam_orientation_rad_copy.y = slam_orientation_rad_copy.y - self.angle_radian
-        
+
 
 
         self.real_world.header = slam_msg.header
@@ -517,7 +517,7 @@ class TelloSlamControler(object):
         # time.sleep(3)
         # self.move_up(0.3)
         # time.sleep(2)
-            
+
         # stop
         # wait without blocking
         t = time.time()
@@ -562,6 +562,8 @@ class TelloSlamControler(object):
         self.rotated_position_0.z = self.lower_z - self.calib_altitude_low/self.real_world_scale
         rospy.loginfo('lower_z = {}, upper_z = {}, real_world_scale={}, rotated_position_0.z={}'.format(self.lower_z, self.upper_z, self.real_world_scale, self.rotated_position_0.z))
 
+        # switch to slam control after calibration
+        # self.allow_slam_control = True
 
     def scan_room_callback(self, msg):
         direction = msg.data * 2 - 1

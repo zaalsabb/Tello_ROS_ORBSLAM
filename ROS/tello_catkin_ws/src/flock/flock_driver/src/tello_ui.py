@@ -35,7 +35,7 @@ class TelloUI(object):
 
         self.quit_flag = False
 
-        try: 
+        try:
             self.id                = rospy.get_param('~ID')
         except KeyError:
             self.id = ''
@@ -71,7 +71,7 @@ class TelloUI(object):
         # self.client = dynamic_reconfigure.client.Client("orb_slam2_mono")
 
         self.use_merge_coordinates = False
-       
+
 
         # create buttons
         self.land = True
@@ -172,7 +172,7 @@ class TelloUI(object):
         rospy.Subscriber(self.publish_prefix+'flight_data', FlightData, self.flightdata_callback)
         rospy.Subscriber(self.publish_prefix+'allow_slam_control', Bool, self.allow_slam_control_callback)
         rospy.Subscriber(self.publish_prefix+'real_world_scale', Float32, self.real_world_scale_callback)
-        rospy.Subscriber(self.publish_prefix+'real_world_pos', PoseStamped, self.real_world_pos_callback) 
+        rospy.Subscriber(self.publish_prefix+'real_world_pos', PoseStamped, self.real_world_pos_callback)
         rospy.Subscriber(self.publish_prefix+'rotated_pos', Point, self.rotated_pos_callback)
         rospy.Subscriber(self.publish_prefix+'command_pos', Pose, self.command_pos_callback)
         rospy.Subscriber(self.publish_prefix+'orientation', Point, self.orientation_callback)
@@ -191,7 +191,7 @@ class TelloUI(object):
         self.path_publisher = rospy.Publisher(self.publish_prefix+'path', Path, queue_size = 1)
         self.take_picure_publisher = rospy.Publisher(self.publish_prefix+'take_picure', Empty, queue_size=1)
         self.merge_coordinates_pub = rospy.Publisher(self.publish_prefix+'TransformerState', Bool, queue_size=1)
-        
+
 
         self.publish_command()
 
@@ -423,7 +423,7 @@ class TelloUI(object):
         self.frame_column += 1
         self.row += 1
         self.column = 0
-    
+
     def init_speed_frame(self, root_frame):
         self.init_speed_frame_flag = True
         self.frame_column = 0
@@ -706,7 +706,7 @@ class TelloUI(object):
         self.angle_calc_entry_angle.grid(row=self.frame_row, column=self.frame_column)#, padx=5, pady=5)
         self.angle_calc_entry_angle.delete(0, tki.END)
         self.angle_calc_entry_angle.insert(0, "0.0")
-        self.angle_calc_strigvar_angle.set('%.4f'%(self.angle))  
+        self.angle_calc_strigvar_angle.set('%.4f'%(self.angle))
 
         self.frame_column += 1
 
@@ -717,7 +717,7 @@ class TelloUI(object):
 
         self.row += 1
         self.column = 0
-    
+
     def init_rotated_frame(self, root_frame):
         self.init_rotated_frame_flag = True
         self.frame_column = 0
@@ -856,7 +856,7 @@ class TelloUI(object):
 
         self.row += 1
         self.column = 0
-    
+
     def init_kd_kp_frame(self, root_frame):
         self.init_kd_kp_frame_flag = True
         self.frame_column = 0
@@ -990,7 +990,7 @@ class TelloUI(object):
         self.column = 0
 
     def init_merge_map_frame(self, root_frame):
-        
+
 
         self.init_merge_map_frame_flag = True
         self.frame_column = 0
@@ -1013,11 +1013,11 @@ class TelloUI(object):
 
 
 
-    
+
     def init_trajectory_frame(self, root_frame):
-        
+
         self.init_trajectory_frame_flag = True
-        
+
 
         self.frame_trajectory_main = tki.Frame(root_frame, relief=tki.SUNKEN, borderwidth = 1)
         rospy.loginfo("trajectory_frame in row={} column={}".format(self.row, self.column))
@@ -1048,7 +1048,7 @@ class TelloUI(object):
 
         self.trajectory_reload_last_btn = tki.Button(self.current_frame, text="Reload Last",  command=self.load_last_trajectory_callback)
         self.trajectory_reload_last_btn.grid(row=self.frame_row, column=self.frame_column)#, padx=3, pady=3)
-        
+
         self.frame_row += 1
 
         self.trajectory_pushup_btn = tki.Button(self.current_frame, text="Push Up!",  command=self.trajectory_pushup_callback)
@@ -1062,7 +1062,7 @@ class TelloUI(object):
 
 
         self.frame_trajectory_2 = tki.Frame(self.frame_trajectory_main, relief=tki.SUNKEN, borderwidth = 1)
-        self.frame_trajectory_2.grid(row=1, column=0)        
+        self.frame_trajectory_2.grid(row=1, column=0)
 
         self.current_frame = self.frame_trajectory_2
 
@@ -1145,7 +1145,7 @@ class TelloUI(object):
         self.row += 1
         self.column = 0
 
-    
+
 
     def calibrate_z_callback(self):
         self.calibrate_real_world_scale_publisher.publish()
@@ -1171,7 +1171,7 @@ class TelloUI(object):
     def real_world_scale_callback(self, msg):
         self.real_world_scale = float(msg.data)
         if self.init_real_world_frame_flag:
-            self.real_world_strigvar_scale.set('%.4f'%(self.real_world_scale)) 
+            self.real_world_strigvar_scale.set('%.4f'%(self.real_world_scale))
         self.btn_calibrate_z.configure(fg = 'green', bg = 'yellow')
 
 
@@ -1193,7 +1193,7 @@ class TelloUI(object):
                 # self.real_world_scale = self.altitude / self.rotated_pos.z
         # except ZeroDivisionError:
             # self.real_world_scale = 1
-        # self.real_world_strigvar_scale.set('%.4f'%(self.real_world_scale))  
+        # self.real_world_strigvar_scale.set('%.4f'%(self.real_world_scale))
 
     def allow_slam_control_callback(self, msg):
         self.allow_slam_control = (msg.data == 1)
@@ -1255,7 +1255,7 @@ class TelloUI(object):
         self.take_picure_publisher.publish()
 
     def trajectory_load_callback(self):
-        trajectory_path = tkFileDialog.askopenfilename(initialdir = "~/ROS/ccmslam_ws/src/flock/flock_driver/src/",title = "Select Trajectory file",filetypes = (("csv files","*.csv"),("all files","*.*")))    
+        trajectory_path = tkFileDialog.askopenfilename(initialdir = "~/ROS/ccmslam_ws/src/flock/flock_driver/src/",title = "Select Trajectory file",filetypes = (("csv files","*.csv"),("all files","*.*")))
         if trajectory_path == '':
             return
         self.trajectory_list = self.load_trajectory_from_csv(trajectory_path)
@@ -1280,7 +1280,7 @@ class TelloUI(object):
                 out.append(line_list)
             for trajectory_idx in range(self.number_of_trajectory_points_ui, len(self.trajectory_list)):
                 out.append(self.trajectory_list[trajectory_idx])
-        except ValueError:   
+        except ValueError:
             rospy.loginfo('Trajectory length is {} which is less than {}'.format(len(self.trajectory_list), self.number_of_trajectory_points_ui))
         self.trajectory_list = out
 
@@ -1418,7 +1418,7 @@ class TelloUI(object):
         tan_angle = z/x
         self.angle_radian = math.atan(tan_angle)
         self.angle = self.angle_radian*180/math.pi
-        self.angle_calc_strigvar_angle.set('%.4f'%(self.angle))  
+        self.angle_calc_strigvar_angle.set('%.4f'%(self.angle))
         print("x={} z={} z/x={} angle={}".format(x, z, tan_angle, self.angle))
 
     def orientation_callback(self, orientation_point):
@@ -1484,19 +1484,19 @@ class TelloUI(object):
         orientation_deg = self.quatenrion_point_to_euler_degree(command_pos.orientation)
         self.point_command_pos_yaw =  orientation_deg.z
         # rospy.loginfo("self.point_command_pos_yaw = {} {} {}".format(self.point_command_pos_yaw, command_pos.orientation, orientation_deg))
-        self.update_command_pos_to_gui()  
+        self.update_command_pos_to_gui()
 
     def slam_callback(self, slam_msg):
         self.slam_pos = slam_msg.pose.position
         if self.init_slam_pose_frame_flag:
             self.slam_pose_strigvar_x.set('%.4f'%(self.slam_pos.x))
             self.slam_pose_strigvar_y.set('%.4f'%(self.slam_pos.y))
-            self.slam_pose_strigvar_z.set('%.4f'%(self.slam_pos.z))    
+            self.slam_pose_strigvar_z.set('%.4f'%(self.slam_pos.z))
 
         if self.init_angle_calc_frame_flag:
             self.angle_calc_strigvar_x_moved.set('%.4f'%(self.slam_pos.x - self.angle_delta_x))
             self.angle_calc_strigvar_y_moved.set('%.4f'%(self.slam_pos.y - self.angle_delta_y))
-            self.angle_calc_strigvar_z_moved.set('%.4f'%(self.slam_pos.z - self.angle_delta_z))  
+            self.angle_calc_strigvar_z_moved.set('%.4f'%(self.slam_pos.z - self.angle_delta_z))
         if self.manual_control_clear_btn.cget('background') == 'black':
             if self.manual_control_clear_btn.cget('foreground') == 'yellow':
                 self.manual_control_clear_btn.configure(bg = 'black', fg = 'red')
@@ -1608,7 +1608,7 @@ class TelloUI(object):
     def onClose(self, *args):
         """
         set the stop event, cleanup the camera, and allow the rest of
-        
+
         the quit process to continue
         """
         print("[INFO] closing...")
@@ -1624,4 +1624,3 @@ if __name__ == '__main__':
     root = tki.Tk()
     my_gui = TelloUI(root)
     root.mainloop()
-
